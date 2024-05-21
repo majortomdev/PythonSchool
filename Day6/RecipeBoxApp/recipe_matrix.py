@@ -3,6 +3,7 @@ from pathlib import Path
 from os import system
 
 user_selection=0
+finish_program = False
 my_path = Path(Path.home(), 'Recipes')
 recipes = Path(my_path).glob('*.txt')
 def count_recipes(path):
@@ -36,7 +37,7 @@ def start():
         ''')
         user_selection = input()
 
-
+    return int(user_selection)
 def show_categories(path):
     print("Categories: ")
     categories_path = Path(path)
@@ -51,10 +52,9 @@ def show_categories(path):
 
     return categories_list
 
-
 def choose_category(categories):
     correct_choice = 'x'
-    while not correct_choice.isnumeric() or correct_choice not in range(1, len(categories)+1):
+    while not correct_choice.isnumeric() or int(correct_choice) not in range(1, len(categories)+1):
         correct_choice = input('\nChoose a category: ')
 
     return categories[int(correct_choice)-1]
@@ -73,46 +73,110 @@ def show_recipes(path):
 
     return recipes_list
 
-
-def choose_recipes(list):
+def choose_recipe(a_list):
     recipe_choice = 'x'
 
-    while not recipe_choice.isnumeric() or recipe_choice not in range(1, len(list)+1):
+    while not recipe_choice.isnumeric() or int(recipe_choice) not in range(1, len(a_list)+1):
+
         recipe_choice = input('\nChoose a recipe: ')
+    #print("*********  "+list[input(recipe_choice)-1].name )
+    return a_list[int(recipe_choice)-1]
 
-    return list[input(recipe_choice)-1]
+def read_recipe(recipe):
+    print(Path.read_text(recipe))
 
+def create_recipe(path):
+    exists = False
 
-start()
+    while not exists:
+        print("Write the name of your recipe: ")
+        recipe_name = input() + '.txt'
+        print("Write your new recipe: ")
+        recipe_content = input()
+        new_path = Path(path, recipe_name)
 
-if user_selection ==1:
-    my_categories = show_categories(my_path)
-    my_category = choose_category(my_categories)
-    my_recipes = show_recipes(my_category)
-    my_recipe = choose_recipes(my_recipes)
-    pass
+        if not os.path.exists(new_path):
+            Path.write_text(new_path, recipe_content)
+            print(f"Your recipe {recipe_name} has been created")
+            exists = True
+        else:
+            print("Sorry, that recipe already exists!")
 
-elif user_selection == 2:
-    my_categories = show_categories(my_path)
-    my_category = choose_category(my_categories)
+def create_category(path):
+    exists = False
 
-    pass
+    while not exists:
+        print("Write the name of your new category: ")
+        category_name = input()
+        new_path = Path(path, category_name)
 
-elif user_selection == 3:
+        if not os.path.exists(new_path):
+            Path.mkdir(new_path)
+            print(f"Your new category {category_name} has been created")
+            exists = True
+        else:
+            print("Sorry, that category already exists!")
 
+def delete_recipe(recipe):
+    Path(recipe).unlink()
+    print(f"The recipe {recipe.name} has been deleted")
 
-    pass
+def delete_category(category):
+    Path(category).rmdir()
+    print(f"The category {category.name} has been removed")
 
-elif user_selection == 4:
-    my_categories = show_categories(my_path)
-    my_category = choose_category(my_categories)
-    my_recipes = show_recipes(my_category)
-    my_recipe = choose_recipes(my_recipes)
+def return_to_beginning():
+    return_choice = 'x'
 
-    pass
+    while return_choice.lower() != 'b':
+        return_choice = input("\nPress 'b' to return to the menu: ")
 
-elif user_selection == 5:
-    my_categories = show_categories(my_path)
-    my_category = choose_category(my_categories)
+while not finish_program:
+    user_selection = start()
 
-    pass
+    if user_selection ==1:
+        my_categories = show_categories(my_path)
+        my_category = choose_category(my_categories)
+        my_recipes = show_recipes(my_category)
+        if len(my_recipes)<1:
+            print("This categorys got zero recipes in it")
+        else:
+            my_recipe = choose_recipe(my_recipes)
+            read_recipe(my_recipe)
+        return_to_beginning()
+        pass
+
+    elif user_selection == 2:
+        my_categories = show_categories(my_path)
+        my_category = choose_category(my_categories)
+        create_recipe(my_category)
+        return_to_beginning()
+        pass
+
+    elif user_selection == 3:
+        create_category(my_path)
+        return_to_beginning()
+        pass
+
+    elif user_selection == 4:
+        my_categories = show_categories(my_path)
+        my_category = choose_category(my_categories)
+        my_recipes = show_recipes(my_category)
+        if len(my_recipes)<1:
+            print("This categorys got zero recipes in it")
+        else:
+            my_recipe = choose_recipe(my_recipes)
+            delete_recipe(my_recipe)
+        return_to_beginning()
+        pass
+
+    elif user_selection == 5:
+        my_categories = show_categories(my_path)
+        my_category = choose_category(my_categories)
+        delete_category(my_category)
+        return_to_beginning()
+        pass
+
+    elif user_selection == 6:
+        finish_program = True
+        pass
