@@ -31,6 +31,7 @@ class Customer(Person):
 
 def bank_action(cust):
     stay_connected = True
+    print(cust)
     while stay_connected:
         action_choice = int(input('''Would you like to: 
         Deposit[1]
@@ -64,7 +65,7 @@ def start():
 
     customer_a = Customer(f_name,l_name,a_number,bal)
     accounts.append(customer_a)
-    print(customer_a)
+    #print(customer_a)
     bank_action(customer_a)
 
 
