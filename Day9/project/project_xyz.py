@@ -49,10 +49,10 @@ def show_all():
     print("-" * 50)
     print(f'Search date: {today.month}/{today.day}/{today.year}')
     print()
-    print("FILE" + "\t\t" + "SERIAL NO.")
-    print("-" * 4 + "\t\t" + "-" * 10)
+    print("FILE" + "\t\t\t" + "SERIAL NO.")
+    print("-" * 4 + "\t\t\t" + "-" * 10)
     for a in files_found:
-        print(f'{a}\t{numbers_found[index]}')
+        print(f'{a}\t\t{numbers_found[index]}')
         index += 1
 
     print()
