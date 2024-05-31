@@ -34,12 +34,14 @@ import send2trash
 
 path = 'C:\\Users\\user\\Desktop\\Python\\topfolder'
 
-for folder, subfolder, file in os.walk(path):
-    print(f'In folder: {folder}')
-    print(f'Subfolders are: ')
-    for sub in subfolder:
-        print(f'\t{sub}')
-    print(f'Files are: ')
-    for fi in file:
-        print(f'\t{fi}')
-    print('\t')
+for i in os.walk('C:\\Users\\user\\Desktop\\Python\\topfolder'):
+    print(i[2])
+# for folder, subfolder, file in os.walk(path):
+#     print(f'In folder: {folder}')
+#     print(f'Subfolders are: ')
+#     for sub in subfolder:
+#         print(f'\t{sub}')
+#     print(f'Files are: ')
+#     for fi in file:
+#         print(f'\t{fi}')
+#     print('\t')
