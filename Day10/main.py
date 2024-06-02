@@ -2,6 +2,7 @@ import math
 
 import pygame
 import random
+from pygame import mixer
 
 #initialise pygame
 pygame.init()
@@ -14,6 +15,10 @@ pygame.display.set_caption("Space Invaders Have Arrived")
 icon = pygame.image.load("ufo.png")
 pygame.display.set_icon(icon)
 background = pygame.image.load("space.jpg")
+
+# Add MUSIC
+mixer.music.load('psych.mp3')
+mixer.music.play(-1)# the -1 tells it to play again every finish
 
 # PLAYER variables
 img_player = pygame.image.load("spaceship.png")
@@ -100,6 +105,8 @@ while is_running:
             if e.key == pygame.K_RIGHT:
                 player1_x_change = 1
             if e.key == pygame.K_SPACE:
+                bullet_sound = mixer.Sound('mixkit_laser.wav')
+                bullet_sound.play()
                 if not visible_bullet:
                     bullet_x = player1_x
                     shoot_bullet(bullet_x, bullet_y)
@@ -141,6 +148,8 @@ while is_running:
         # COLLISION
         collision = there_is_a_collision(enemy1_x[ene], enemy1_y[ene], bullet_x, bullet_y)
         if collision:
+            collision_sound = mixer.Sound('Woodclub_2.mp3')
+            collision_sound.play()
             bullet_y = 500
             visible_bullet = False
             score += 1
