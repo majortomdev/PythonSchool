@@ -48,6 +48,15 @@ visible_bullet = False
 
 # SCORE
 score = 0
+my_font = pygame.font.Font('The Kanzie TTF Demo.ttf',32)
+text_x = 10 #freesansbold.ttf
+text_y = 10
+
+# SHOW score function
+def show_score(x,y):
+    text = my_font.render(f'Score: {score}', True, (255,255,255))
+    screen.blit(text, (x,y))
+
 
 # PLAYER function
 def player(x,y):
@@ -135,7 +144,6 @@ while is_running:
             bullet_y = 500
             visible_bullet = False
             score += 1
-            print(score)
             enemy1_x[ene] = random.randint(0, 736)
             enemy1_y[ene] = random.randint(50, 200)
 
@@ -153,6 +161,7 @@ while is_running:
 
     player(player1_x, player1_y)
 
+    show_score(text_x, text_y)
 
     # update
     pygame.display.update()
