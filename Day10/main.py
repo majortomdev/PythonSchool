@@ -1,3 +1,5 @@
+import math
+
 import pygame
 import random
 
@@ -11,68 +13,92 @@ screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Space Invaders Have Arrived")
 icon = pygame.image.load("ufo.png")
 pygame.display.set_icon(icon)
+background = pygame.image.load("space.jpg")
 
-# player variables
+# PLAYER variables
 img_player = pygame.image.load("spaceship.png")
 player1_x = 368# this is the middle of a 800px wide screen with a 64px icon
-player1_y = 536# and the is the bottom of a 600 high
+player1_y = 500# and 536 is the bottom of a 600 high, 500 for aesthetics
 player1_x_change = 0
 player1_y_change = 0
 
-#enemy variables
+# ENEMY variables
 img_enemy = pygame.image.load("alien-ship.png")
 enemy1_x = random.randint(0,736)
 enemy1_y = random.randint(50,200)
-enemy1_x_change = 0
-#player1_y_change = 0
+enemy1_x_change = .5
+enemy1_y_change = 40
 
+# BULLET variables
+img_bullet = pygame.image.load("bullet.png")
+bullet_x = 0
+bullet_y = 500
+bullet_x_change = 0
+bullet_y_change = 2.5
+visible_bullet = False
 
-# player function
+# SCORE
+score = 0
+
+# PLAYER function
 def player(x,y):
     screen.blit(img_player, (x,y))
 
 
-# enemy function
+# ENEMY function
 def enemy(x,y):
     screen.blit(img_enemy, (x,y))
 
+# SHOOT function
+def shoot_bullet(x,y):
+    global visible_bullet
+    visible_bullet = True
+    screen.blit(img_bullet, (x +16,y +10))
+
+def there_is_a_collision(x_1, y_1,x_2, y_2):
+    distance = math.sqrt(math.pow(x_1 - x_2, 2) + math.pow(y_1 - y_2, 2))
+    if distance< 27:
+        return True
+    else:
+        return False
 
 
-# game loop
+# GAME LOOP
 is_running = True
 while is_running:
-    # RGB
-    screen.fill((144, 150, 95))
+    # background image
+    screen.blit(background, (0,0))
 
     # event iteration
     for e in pygame.event.get():
 
-        # closing event
+        # CLOSING event
         if e.type == pygame.QUIT:
             is_running = False
-        # press arrow key event
+        # PRESS key event
         if e.type == pygame.KEYDOWN:
             if e.key == pygame.K_LEFT:
-                player1_x_change = -0.5
+                player1_x_change = -1
             if e.key == pygame.K_RIGHT:
-                player1_x_change = 0.5
-            if e.key == pygame.K_UP:
-                player1_y_change = -0.5
-            if e.key == pygame.K_DOWN:
-                player1_y_change = 0.5
+                player1_x_change = 1
+            if e.key == pygame.K_SPACE:
+                if not visible_bullet:
+                    bullet_x = player1_x
+                    shoot_bullet(bullet_x, bullet_y)
 
-        # release key event
+
+        # RELEASE key event
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_LEFT or e.key == pygame.K_RIGHT:
                 player1_x_change = 0
             if e.key == pygame.K_UP or e.key == pygame.K_DOWN:
                 player1_y_change = 0
 
-    # modify location
+    # MODIFY player location
     player1_x += player1_x_change
-    player1_y += player1_y_change
+    #player1_y += player1_y_change
 
-    # keep inside screen boundary
+    # keep player inside screen boundary
     if player1_x <= 3:
         player1_x = 3
     if player1_x >= 733:    #  becos 800 - 64 for icon size
@@ -81,6 +107,36 @@ while is_running:
         player1_y = 3
     if player1_y >= 536:
         player1_y = 536
+
+    # modify enemy location
+    enemy1_x += enemy1_x_change
+    #enemy1_y += enemy1_y_change
+
+    # keep enemy inside screen boundary
+    if enemy1_x <= 0:
+        enemy1_x_change = .4
+        enemy1_y += enemy1_y_change
+    if enemy1_x >= 733:  # becos 800 - 64 for icon size
+        enemy1_x_change = -.4
+        enemy1_y += enemy1_y_change
+
+    # BULLETS movement
+    if bullet_y <= -64:
+        bullet_y = 500
+        visible_bullet = False
+    if visible_bullet:
+        shoot_bullet(bullet_x, bullet_y)
+        bullet_y -= bullet_y_change
+
+    # COLLISION
+    collision = there_is_a_collision(enemy1_x,enemy1_y, bullet_x, bullet_y)
+    if collision:
+        bullet_y = 500
+        visible_bullet = False
+        score +=1
+        print(score)
+        enemy1_x = random.randint(0, 736)
+        enemy1_y = random.randint(50, 200)
 
     player(player1_x, player1_y)
     enemy(enemy1_x, enemy1_y)
