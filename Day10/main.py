@@ -57,6 +57,13 @@ my_font = pygame.font.Font('The Kanzie TTF Demo.ttf',32)
 text_x = 10 #freesansbold.ttf
 text_y = 10
 
+# END of game text
+end_font = pygame.font.Font('The Kanzie TTF Demo.ttf',40)
+
+def final_text():
+    my_final_font = end_font.render("GAME OVER", True, (255,255,255))
+    screen.blit(my_final_font, (300,250))
+
 # SHOW score function
 def show_score(x,y):
     text = my_font.render(f'Score: {score}', True, (255,255,255))
@@ -135,6 +142,13 @@ while is_running:
 
     # modify enemy location
     for ene in range(number_of_enemies):
+        # END OF GAME
+        if enemy1_y[ene] > 400:
+            for k in range(number_of_enemies):
+                enemy1_y[k]=1000
+            final_text()
+            mixer.music.stop()
+            break
         enemy1_x[ene] += enemy1_x_change[ene]
 
         # keep enemy inside screen boundary
