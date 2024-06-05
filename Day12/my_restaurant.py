@@ -1,6 +1,9 @@
 from tkinter import *
 
 operator = ''
+food_price = [1.32, 1.65, 2.31, 3.22, 1.22, 1.99, 2.05, 2.65]
+drink_price = [0.25, 0.99, 1.21, 1.54, 1.08, 1.10, 2.00, 1.58]
+dessert_price = [1.54, 1.68, 1.32, 1.97, 2.55, 2.14, 1.94, 1.74]
 
 def click_button(character):
     global operator
@@ -18,6 +21,73 @@ def get_result():
     result = str(eval(operator))
     calculator_display.delete(0, END)
     calculator_display.insert(0, result)
+
+def review_check():
+    x = 0
+    for b in food_box:
+        if food_variables[x].get() == 1:
+            food_box[x].config(state=NORMAL)
+            if food_box[x].get() == '0':
+                food_box[x].delete(0, END)
+            food_box[x].focus()
+        else:
+            food_box[x].config(state=DISABLED)
+            food_text[x].set('0')
+        x += 1
+
+    x = 0
+    for b in drink_box:
+        if drink_variables[x].get() == 1:
+            drink_box[x].config(state=NORMAL)
+            if drink_box[x].get() == '0':
+                drink_box[x].delete(0, END)
+            drink_box[x].focus()
+        else:
+            drink_box[x].config(state=DISABLED)
+            drink_text[x].set('0')
+        x += 1
+
+    x = 0
+    for b in dessert_box:
+        if dessert_variables[x].get() == 1:
+            dessert_box[x].config(state=NORMAL)
+            if dessert_box[x].get() == '0':
+                dessert_box[x].delete(0, END)
+            dessert_box[x].focus()
+        else:
+            dessert_box[x].config(state=DISABLED)
+            dessert_text[x].set('0')
+        x += 1
+
+def total_calculation():
+    food_subtotal = 0
+    p = 0
+    for unit in food_text:
+        food_subtotal = food_subtotal + (float(unit.get()) * food_price[p])
+        p += 1
+
+    drink_subtotal = 0
+    p = 0
+    for unit in food_text:
+        drink_subtotal = drink_subtotal + (float(unit.get()) * drink_price[p])
+        p += 1
+
+    dessert_subtotal = 0
+    p = 0
+    for unit in food_text:
+        dessert_subtotal = dessert_subtotal + (float(unit.get()) * dessert_price[p])
+        p += 1
+
+    my_subtotal = food_subtotal + drink_subtotal + dessert_subtotal
+    my_taxes = my_subtotal * 0.11
+    my_total = my_subtotal + my_taxes
+
+    food_cost_var.set(f'$ {round(food_subtotal, 2)}')
+    drink_cost_var.set(f'$ {round(drink_subtotal, 2)}')
+    dessert_cost_var.set(f'$ {round(dessert_subtotal, 2)}')
+    subtotal_var.set(f'$ {round(my_subtotal, 2)}')
+    taxes_var.set(f'$ {round(my_taxes, 2)}')
+    total_var.set(f'$ {round(my_total, 2)}')
 
 # INITIALISE TKinter
 application = Tk()
@@ -96,7 +166,8 @@ for food in food_list:
                        font = ('Dosis',19,'bold'),
                        onvalue=1,
                        offvalue=0,
-                       variable= food_variables[counter])
+                       variable= food_variables[counter],
+                       command= review_check)
     food.grid(row= counter,
               column= 0,
               sticky= W)
@@ -132,7 +203,8 @@ for drink in drink_list:
                         font=('Dosis', 19, 'bold'),
                         onvalue=1,
                         offvalue=0,
-                        variable=drink_variables[counter])
+                        variable=drink_variables[counter],
+                        command= review_check)
     drink.grid(row=counter,
                column=0,
                sticky=W)
@@ -168,7 +240,8 @@ for dessert in dessert_list:
                           font= ('Dosis', 19, 'bold'),
                           onvalue=1,
                           offvalue=0,
-                          variable=dessert_variables[counter])
+                          variable=dessert_variables[counter],
+                          command= review_check)
     dessert.grid(row=counter,
                  column=0,
                  sticky=W)
@@ -285,6 +358,7 @@ total_text.grid(row =2, column= 3)
 
 # BUTTONS
 buttons = ['total', 'invoice','save','reset']
+created_buttons = []
 column = 0
 for button in buttons:
     button = Button(button_panel,
@@ -293,10 +367,14 @@ for button in buttons:
                     fg= 'white',
                     bg='azure4',
                     bd=1,
-                    width=6)#orig 9
+                    width=6,)#orig 9
+    created_buttons.append(button)
+
     button.grid(row= 0,
                 column= column)
     column +=1
+
+created_buttons[0].config(command=total_calculation)
 
 # INVOICE area
 invoice_text = Text(invoice_panel,
