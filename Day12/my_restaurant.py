@@ -4,7 +4,7 @@ from tkinter import *
 application = Tk()
 
 application.title("My Restaurant - Billing System")
-application.geometry('1020x630+0+0') # set window size
+application.geometry('1270x630+0+0') # set window size was 1020x630
 application.resizable(False, False)
 application.config(bg='burlywood')
 
@@ -263,6 +263,31 @@ total_text = Entry(cost_panel,
                        state= 'readonly',
                        textvariable= total_var)
 total_text.grid(row =2, column= 3)
+
+# BUTTONS
+buttons = ['total', 'invoice','save','reset']
+column = 0
+for button in buttons:
+    button = Button(button_panel,
+                    text= button.title(),
+                    font= ('Dosis', 14, 'bold'),
+                    fg= 'white',
+                    bg='azure4',
+                    bd=1,
+                    width=9)
+    button.grid(row= 0,
+                column= column)
+    column +=1
+
+# INVOICE area
+invoice_text = Text(invoice_panel,
+                    font=('Dosis', 12, 'bold'),
+                    height=10,
+                    bd=1,
+                    width=42
+                    )
+invoice_text.grid(row=0,
+                  column=0)
 
 
 # prevent WINDOW from closing
