@@ -1,5 +1,24 @@
 from tkinter import *
 
+operator = ''
+
+def click_button(character):
+    global operator
+    operator = operator + character
+    calculator_display.delete(0, END)
+    calculator_display.insert(END, operator)
+
+def delete_all():
+    global operator
+    operator = ''
+    calculator_display.delete(0 , END)
+
+def get_result():
+    global operator
+    result = str(eval(operator))
+    calculator_display.delete(0, END)
+    calculator_display.insert(0, result)
+
 # INITIALISE TKinter
 application = Tk()
 
@@ -302,6 +321,9 @@ calculator_buttons= ['7', '8', '9', '+',
                      '1', '2', '3', 'x',
                      'CE', 'Delete', '0', '/']
 
+stored_buttons = []
+
+
 my_row = 1
 my_column = 0
 
@@ -312,6 +334,9 @@ for button in calculator_buttons:
                     bg= 'azure4',
                     bd=1,
                     width=8)
+
+    stored_buttons.append(button)
+
     button.grid(row= my_row,
                 column = my_column)
 
@@ -322,5 +347,25 @@ for button in calculator_buttons:
 
     if my_column == 4:
         my_column = 0
+
+
+stored_buttons[0].config(command=lambda: click_button('7'))
+stored_buttons[1].config(command=lambda: click_button('8'))
+stored_buttons[2].config(command=lambda: click_button('9'))
+stored_buttons[3].config(command=lambda: click_button('+'))
+stored_buttons[4].config(command=lambda: click_button('4'))
+stored_buttons[5].config(command=lambda: click_button('5'))
+stored_buttons[6].config(command=lambda: click_button('6'))
+stored_buttons[7].config(command=lambda: click_button('-'))
+stored_buttons[8].config(command=lambda: click_button('1'))
+stored_buttons[9].config(command=lambda: click_button('2'))
+stored_buttons[10].config(command=lambda: click_button('3'))
+stored_buttons[11].config(command=lambda: click_button('*'))
+stored_buttons[12].config(command=get_result)
+stored_buttons[13].config(command=delete_all)
+stored_buttons[14].config(command=lambda: click_button('0'))
+stored_buttons[15].config(command=lambda: click_button('/'))
+
+
 # prevent WINDOW from closing
 application.mainloop()
