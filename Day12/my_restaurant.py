@@ -4,7 +4,7 @@ from tkinter import *
 application = Tk()
 
 application.title("My Restaurant - Billing System")
-application.geometry('1270x630+0+0') # set window size was 1020x630
+application.geometry('1135x630+0+0') # set window size was 1020x630
 application.resizable(False, False)
 application.config(bg='burlywood')
 
@@ -274,7 +274,7 @@ for button in buttons:
                     fg= 'white',
                     bg='azure4',
                     bd=1,
-                    width=9)
+                    width=6)#orig 9
     button.grid(row= 0,
                 column= column)
     column +=1
@@ -290,5 +290,37 @@ invoice_text.grid(row=0,
                   column=0)
 
 
+# CALCULATOR
+calculator_display = Entry(calculator_panel,
+                           font=('Dosis', 12, 'bold'),
+                           width=36,
+                           bd=1)
+calculator_display.grid(row=0, column=0, columnspan=4)
+
+calculator_buttons= ['7', '8', '9', '+',
+                     '4', '5', '6', '-',
+                     '1', '2', '3', 'x',
+                     'CE', 'Delete', '0', '/']
+
+my_row = 1
+my_column = 0
+
+for button in calculator_buttons:
+    button = Button(calculator_panel,
+                    text= button.title(),
+                    fg= 'white',
+                    bg= 'azure4',
+                    bd=1,
+                    width=8)
+    button.grid(row= my_row,
+                column = my_column)
+
+    if my_column == 3:
+        my_row+=1
+
+    my_column+=1
+
+    if my_column == 4:
+        my_column = 0
 # prevent WINDOW from closing
 application.mainloop()
