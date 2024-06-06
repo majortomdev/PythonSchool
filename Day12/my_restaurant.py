@@ -1,4 +1,7 @@
 from tkinter import *
+import random
+import datetime
+from tkinter import filedialog, messagebox
 
 operator = ''
 food_price = [1.32, 1.65, 2.31, 3.22, 1.22, 1.99, 2.05, 2.65]
@@ -63,7 +66,7 @@ def total_calculation():
     food_subtotal = 0
     p = 0
     for unit in food_text:
-        food_subtotal = food_subtotal + (float(unit.get()) * food_price[p])
+        food_subtotal = round(food_subtotal + (float(unit.get()) * food_price[p]),2)
         p += 1
 
     drink_subtotal = 0
@@ -88,6 +91,86 @@ def total_calculation():
     subtotal_var.set(f'$ {round(my_subtotal, 2)}')
     taxes_var.set(f'$ {round(my_taxes, 2)}')
     total_var.set(f'$ {round(my_total, 2)}')
+
+def create_invoice():
+    invoice_text.delete(1.0, END)
+    invoice_number = f'N# - {random.randint(1000,9999)}'
+    my_date = datetime.datetime.now()
+    invoice_date = f'{my_date.month}/{my_date.day}/{my_date.year} - {my_date.hour}:{my_date.minute}'
+    invoice_text.insert(END, f'Information: \t{invoice_number}\t\t{invoice_date}\n')
+    invoice_text.insert(END, f'*'*55 + '\n')
+    invoice_text.insert(END, f'Items\t\tQuantity\tItems Cost\n')
+    invoice_text.insert(END, f'-'*56 + '\n')
+
+    x = 0
+    for f in food_text:
+        if f.get() != '0':
+            invoice_text.insert(END, f'{food_list[x]}\t\t{f.get()}\t'
+                                    f'$ {int(f.get()) * food_price[x]}\n')
+        x += 1
+
+    x = 0
+    for d in drink_text:
+        if d.get() != '0':
+            invoice_text.insert(END, f'{drink_list[x]}\t\t{d.get()}\t'
+                                    f'$ {int(d.get()) * drink_price[x]}\n')
+        x += 1
+
+    x = 0
+    for s in dessert_text:
+        if s.get() != '0':
+            invoice_text.insert(END, f'{dessert_list[x]}\t\t{s.get()}\t'
+                                    f'$ {int(s.get()) * dessert_price[x]}\n')
+        x += 1
+
+    invoice_text.insert(END, f'*' * 55 + '\n')
+    invoice_text.insert(END, f'Food Subtotal: \t\t\t{food_cost_var.get()}\n')
+    invoice_text.insert(END, f'Drink Subtotal: \t\t\t{drink_cost_var.get()}\n')
+    invoice_text.insert(END, f'Dessert Subtotal: \t\t\t{dessert_cost_var.get()}\n')
+    invoice_text.insert(END, f'*' * 55 + '\n')
+    invoice_text.insert(END, f'Subtotal: \t\t\t{subtotal_var.get()}\n')
+    invoice_text.insert(END, f'Taxes: \t\t\t{taxes_var.get()}\n')
+    invoice_text.insert(END, f'Total: \t\t\t{total_var.get()}\n')
+    invoice_text.insert(END, f'*' * 55 + '\n')
+    invoice_text.insert(END, f'See you again soon')
+
+def save_invoice():
+    invoice_info = invoice_text.get(1.0, END)
+    my_file = filedialog.asksaveasfile(mode= 'w', defaultextension= '.txt')
+    my_file.write(invoice_info)
+    my_file.close()
+    messagebox.showinfo('Notification', 'Your invoice has been saved')
+
+def reset_all():
+    invoice_text.delete(0.1, END)
+
+    for text in food_text:
+        text.set('0')
+    for text in drink_text:
+        text.set('0')
+    for text in dessert_text:
+        text.set('0')
+
+    for box in food_box:
+        box.config(state=DISABLED)
+    for box in drink_box:
+        box.config(state=DISABLED)
+    for box in dessert_box:
+        box.config(state=DISABLED)
+
+    for var in food_variables:
+        var.set(0)
+    for var in drink_variables:
+        var.set(0)
+    for var in dessert_variables:
+        var.set(0)
+
+    food_cost_var.set('')
+    drink_cost_var.set('')
+    dessert_cost_var.set('')
+    subtotal_var.set('')
+    taxes_var.set('')
+    total_var.set('')
 
 # INITIALISE TKinter
 application = Tk()
@@ -375,6 +458,9 @@ for button in buttons:
     column +=1
 
 created_buttons[0].config(command=total_calculation)
+created_buttons[1].config(command=create_invoice)
+created_buttons[2].config(command=save_invoice)
+created_buttons[3].config(command=reset_all)
 
 # INVOICE area
 invoice_text = Text(invoice_panel,
